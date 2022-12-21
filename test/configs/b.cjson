@@ -1,0 +1,11 @@
+{
+  "#include": "a.cjson",
+  "table": {
+    "dimensions": {
+      "width": "100 cm"
+    }
+  },
+  "chair": {
+    "quantity": 4
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "#include": "common.cjson",
+  "villa": {
+    "backyard": {
+      "garden": {
+        "plants": {
+          "flowers": ["roses"]
+        }
+      }
+    }
+  }
+}

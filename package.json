@@ -1,0 +1,32 @@
+{
+  "name": "config-cjson",
+  "version": "1.0.0",
+  "description": "Load cjson config files",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muqsith/config-cjson.git"
+  },
+  "keywords": [
+    "config",
+    "cjson"
+  ],
+  "author": "muqsith",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/muqsith/config-cjson/issues"
+  },
+  "homepage": "https://github.com/muqsith/config-cjson#readme",
+  "dependencies": {
+    "commander": "^9.4.1",
+    "fs-extra": "^11.1.0",
+    "json5": "2.2.2",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0"
+  }
+}

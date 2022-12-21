@@ -1,0 +1,17 @@
+{
+  "#include": "b.cjson",
+  "villa": {
+    "backyard": {
+      "swimming-pool": {
+        "dimensions": {
+          "breadth": "50 ft"
+        }
+      },
+      "garden": {
+        "plants": {
+          "flowers": ["lillies", "lavender"]
+        }
+      }
+    }
+  }
+}
