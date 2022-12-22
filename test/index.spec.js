@@ -1,7 +1,7 @@
 const pathModule = require("path");
 const assert = require("assert");
 
-const loadConfig = require("../index");
+const loadConfig = require("../config-cjson");
 
 describe("loadConfig", async () => {
   it("should return config", async () => {

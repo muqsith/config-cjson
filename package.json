@@ -6,6 +6,7 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha"
   },
+  "bin": "config-cjson.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/muqsith/config-cjson.git"
