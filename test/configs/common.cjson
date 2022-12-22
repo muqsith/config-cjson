@@ -18,5 +18,11 @@
         }
       }
     }
+  },
+  "garage": {
+    "area": {
+      "length": "30 ft",
+      "width": "20 ft"
+    }
   }
 }

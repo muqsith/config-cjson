@@ -2,7 +2,7 @@
   "#include": "a.cjson",
   "table": {
     "dimensions": {
-      "width": "100 cm"
+      "width": "120 cm"
     }
   },
   "chair": {

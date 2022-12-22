@@ -1,5 +1,10 @@
 {
   "#include": "b.cjson",
+  "table": {
+    "dimensions": {
+      "width": "115 cm"
+    }
+  },
   "villa": {
     "backyard": {
       "swimming-pool": {
