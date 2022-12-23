@@ -7,5 +7,9 @@
   },
   "chair": {
     "quantity": 4
+  },
+  "couch": {
+    "type": "classic",
+    "size": "3 seater"
   }
 }

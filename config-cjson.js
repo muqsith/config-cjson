@@ -7,6 +7,7 @@ const { program } = require("commander");
 const _ = require("lodash");
 
 const INCLUDE_PROP_NAME = "#include";
+const PUBLIC_PROP_NAME = "#public";
 
 const getIncludedConfigFiless = (includesProp) => {
   let result = [];
@@ -25,25 +26,116 @@ const getConfig = async (configFileDir, filePath, filesRead) => {
     configFilePath = pathModule.resolve(configFileDir, filePath);
   }
   if (filesRead.indexOf(configFilePath) === -1) {
-    if (fs.pathExists(configFilePath)) {
-      const textData = await fs.readFile(configFilePath, { encoding: "utf8" });
-      result = JSON5.parse(textData);
-      const includesProp = result[INCLUDE_PROP_NAME];
-      if (includesProp) {
-        delete result[INCLUDE_PROP_NAME];
-        const includedConfigFiles = getIncludedConfigFiless(includesProp);
-        for (const includedConfigFile of includedConfigFiles) {
-          const includedConfig = await getConfig(
-            configFileDir,
-            includedConfigFile,
-            filesRead
-          );
-          result = _.merge(includedConfig, result);
-        }
+    filesRead.push(configFilePath);
+    const textData = await fs.readFile(configFilePath, { encoding: "utf8" });
+    result = JSON5.parse(textData);
+    if (Array.isArray(result)) {
+      throw new Error("Array as root of config is not supported.");
+    }
+    const includesProp = result[INCLUDE_PROP_NAME];
+    if (includesProp) {
+      delete result[INCLUDE_PROP_NAME];
+      const includedConfigFiles = getIncludedConfigFiless(includesProp);
+      for (const includedConfigFile of includedConfigFiles) {
+        const includedConfig = await getConfig(
+          configFileDir,
+          includedConfigFile,
+          filesRead
+        );
+        result = _.merge(includedConfig, result);
       }
     }
   }
   return result;
+};
+
+const reconstructObjectWithPublicConfig = (
+  publicResult,
+  result,
+  parentKey,
+  value,
+  isPublic
+) => {
+  if (Array.isArray(value)) {
+    result[parentKey] = [];
+    publicResult[parentKey] = [];
+    for (let i = 0; i < value.length; i += 1) {
+      const item = value[i];
+      reconstructObjectWithPublicConfig(
+        publicResult[parentKey],
+        result[parentKey],
+        i,
+        item,
+        false
+      );
+    }
+    // knock-off empty publicResult arrays
+    if (
+      Array.isArray(publicResult[parentKey]) &&
+      !publicResult[parentKey].length
+    ) {
+      delete publicResult[parentKey];
+    }
+  } else if (typeof value === "object" && value !== null) {
+    if (parentKey !== null) {
+      if (!result[parentKey]) {
+        result[parentKey] = {};
+      }
+      if (!publicResult[parentKey]) {
+        publicResult[parentKey] = {};
+      }
+    }
+
+    const keys = Object.keys(value);
+    for (let i = 0; i < keys.length; i += 1) {
+      let key = keys[i];
+      const item = value[key];
+      let hasPublicProp = isPublic ? true : false;
+
+      if (key.indexOf(PUBLIC_PROP_NAME) !== -1) {
+        hasPublicProp = true;
+        key = key.replace(PUBLIC_PROP_NAME, "");
+        if (key === "") {
+          key = parentKey;
+        }
+      }
+
+      reconstructObjectWithPublicConfig(
+        parentKey !== null ? publicResult[parentKey] : publicResult,
+        parentKey !== null ? result[parentKey] : result,
+        key,
+        item,
+        hasPublicProp
+      );
+    }
+
+    // knock-off empty publicResult objects
+    if (publicResult[parentKey]) {
+      const publicKeys = Object.keys(publicResult[parentKey]);
+      if (!publicKeys.length) {
+        delete publicResult[parentKey];
+      }
+    }
+  } else {
+    result[parentKey] = value;
+    if (isPublic) {
+      publicResult[parentKey] = value;
+    }
+  }
+};
+
+const extractPublicConfig = (config) => {
+  const reconstructedResult = {};
+  const publicResult = {};
+  reconstructObjectWithPublicConfig(
+    publicResult,
+    reconstructedResult,
+    null,
+    config,
+    false
+  );
+  reconstructedResult[PUBLIC_PROP_NAME] = publicResult;
+  return reconstructedResult;
 };
 
 const loadConfig = async (configFilePath) => {
@@ -59,7 +151,8 @@ const loadConfig = async (configFilePath) => {
   const filePath = pathModule.basename(absoluteFilePath);
   const filesRead = [];
   const result = await getConfig(configFileDir, filePath, filesRead);
-  return result;
+  const resultWithPublicConfig = extractPublicConfig(result);
+  return resultWithPublicConfig;
 };
 
 if (require.main === module) {

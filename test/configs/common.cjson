@@ -2,7 +2,7 @@
   "table": {
     "type": "coffee",
     "dimensions": {
-      "height": "60 cm",
+      "height#public": "60 cm",
       "width": "60 cm",
       "depth": "40 cm"
     }
@@ -19,7 +19,7 @@
       }
     }
   },
-  "garage": {
+  "garage#public": {
     "area": {
       "length": "30 ft",
       "width": "20 ft"
