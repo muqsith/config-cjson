@@ -1,6 +1,6 @@
 {
   "name": "config-cjson",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Load cjson config files",
   "main": "config-cjson.js",
   "scripts": {
