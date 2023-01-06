@@ -130,7 +130,7 @@ async function getConfig(
 			const includedConfigFiles = getIncludedConfigFiles(
 				currentConfig[INCLUDE_PROP_NAME]
 			);
-			hashIncludeConfig = mergeIncludedFiles(
+			hashIncludeConfig = await mergeIncludedFiles(
 				includedConfigFiles,
 				configFileDir,
 				includeHashPublicInKey,
